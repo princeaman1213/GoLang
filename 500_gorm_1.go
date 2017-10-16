@@ -69,7 +69,7 @@ func main() {
 	owner:=Owner{FirstName:"Raman",LastName:"Bindal"}
 	err=tx.Create(&owner).Error
 
-	if err==nil{
+	if err!=nil{
 		tx.Rollback()
 	}else {
 		tx.Commit()

@@ -11,13 +11,14 @@ import (
 type Place struct {
 	gorm.Model
 	Name        string
-	Town        Town           //    `gorm:"ForeignKey:TownID"`
-	TownID      int             //Place belongs to Town
+	Town        []Town             `gorm:"ForeignKey:PlaceID;AssociationForeignKey:ID"`
+	//TownID      int
 }
 
 type Town struct {
 	gorm.Model
 	Name string
+	PlaceID int
 }
 
 func main() {
@@ -41,11 +42,15 @@ func main() {
 	db.DropTableIfExists(&Place{},&Town{})
 	db.CreateTable(&Place{},&Town{})
 
-	place:=Place{Name:"NOIDA",Town:Town{Name:"GBN"}}
-	db.Create(&place)
-	place1:=Place{Name:"DELHI",Town:Town{Name:"shahadra"}}
-	db.Create(&place1)
+	t1:=Town{Name:"gbn"}
+	t2:=Town{Name:"sec-62"}
 
+	place:=Place{Name:"NOIDA",Town:[]Town{t1,t2}}
+	db.Create(&place)
+	place1:=Place{Name:"DELHI",Town:[]Town{{Name:"shahadra"}}}
+	db.Create(&place1)
+	place2:=Place{Name:"Mumbai",Town:[]Town{{Name:"pune"}}}
+	db.Create(&place2)
 	/*town:=Town{Name:"gbn"}
 	db.Create(&town)
 	town1:=Town{Name:"shahadra"}
@@ -54,13 +59,18 @@ func main() {
 	//var user2 User
 	//db.Find(&user2)
 	//for i, _ := range user2 {
-		//db.Model(&user).Related(&profile)
+	//db.Model(&user).Related(&profile)
 	//}
 	var places []Place
 	db.Debug().Preload("Town").Find(&places)
 	//db.Debug().Model(&user).Related(&profile)
 	//db.Debug().Raw("SELECT place.name, town.name FROM place INNER JOIN town ON town.id = place.town_id").Scan(&places)
-	fmt.Println(places)
+	for _,r:=range places{
+        for _,r1:=range r.Town{
+			fmt.Println(r.ID,r.Name,r1.Name)
+		}
+	}
+
 	//db.Model(&)
 	/*var p []Student
 	db.Debug().Find(&p,"first_name=?","Aman")                            // remember Normal MySQL

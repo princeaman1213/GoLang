@@ -54,7 +54,7 @@ func main() {
 	//var user2 User
 	//db.Find(&user2)
 	//for i, _ := range user2 {
-		//db.Model(&user).Related(&profile)
+	//db.Model(&user).Related(&profile)
 	//}
 	var places []Place
 	db.Debug().Preload("Town").Find(&places)
