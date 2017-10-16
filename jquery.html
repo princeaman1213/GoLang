@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BAR</title>
+    <script type="text/javascript">
+        $(document).ready(function(){
+           $('#getweather').click(function () {
+               var reqdata= $('#cityname').val() + ',' + $('#countryname').val()+'&appid=b1b15e88fa797225412429c1c50c122a1';
+               var finalres= $('#result');
+
+               $.ajax({
+                   url:'http://samples.openweathermap.org/data/2.5/weather',
+                   method:'get',
+                   data:{q:reqdata},
+                   datatype:'json',
+                   success: function (data) {
+                      finalres.html('Weather ' + data.weather[0].main + '<br/>' + 'Desc' + data.description[0].main)
+                   }
+               });
+
+           });
+        });
+    </script>
+</head>
+<body style="font-family: Arial">
+
+<table>
+    <tr>
+        <td>City</td>
+        <td><input type="text" id="cityname" /> </td>
+    </tr>
+    <tr>
+        <td>Country</td>
+        <td><input type="text" id="countryname" /> </td>
+    </tr>
+</table>
+<input type="button" id="getweather" value="Get Data"><br />
+
+<div id="result"></div>
+
+</body>
+</html>

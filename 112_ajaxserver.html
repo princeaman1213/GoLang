@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+<form method="post" id="form-create-user" onsubmit="return doSomething();">
+    <input type="text" name="username" id="username" placeholder="email"><br>
+
+    <input type="text" name="password" id="password" placeholder="password"><br>
+    <input type="text" name="empid" id="empid" placeholder="empid"><br>
+    <input type="text" name="address" id="address" placeholder="address"><br>
+    <input type="text" name="personname" id="personname" placeholder="personname"><br>
+    <input type="text" name="position" id="position" placeholder="position"><br>
+    <input type="submit" id="submitbutton">
+
+</form>
+
+<script>
+    var formUser = document.querySelector('#form-create-user');
+    var username = document.querySelector('#username');
+    var pass = document.querySelector('#password');
+    var address = document.querySelector('#address');
+    var empid = document.querySelector('#empid');
+    var position = document.querySelector('#position');
+    var personname = document.querySelector('#personname');
+
+    function doSomething(){
+        console.log(username.value);
+        //alert(username.value);
+        var person = {"username":username.value, "password":pass.value,"empid":empid.value,"position":position.value,"address":address.value,"personname":personname.value};
+        var json=JSON.stringify(person);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/foo', true);
+        //a = username.value+pass.value;
+        xhr.send(json);
+    }
+
+</script>
+</body>
+</html>

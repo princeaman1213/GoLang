@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+{{range .}}
+<h2>Cookie Val : {{.}}</h2>
+<img src="/public/pics/{{.}}" width="400px">
+{{end}}
+
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="nf">
+    <input type="submit">
+</form>
+</body>
+</html>

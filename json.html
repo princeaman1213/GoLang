@@ -1,0 +1,25 @@
+<html>
+<head><title>test</title></head>
+<body>
+<form action="/" method="POST" name="myForm" id="myForm">
+        <input type="text" name="first_name" id="fname"></p>
+        <input type="text" name="last_name" id="lname"></p>
+
+    <input value="Submit" type="submit" onclick="submitform()">
+</form>
+<script src="js/jquery.js"></script>
+<script type="text/javascript">
+    function submitform() {
+        var xhr = new XMLHttpRequest();
+        xhr.open(form.method, form.action, true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        var formData = JSON.stringify($("#myForm").serializeArray());
+        xhr.send(formData);
+
+        alert('Done ');
+    }
+
+</script>
+
+</body>
+</html>

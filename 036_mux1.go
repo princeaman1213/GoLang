@@ -1,0 +1,31 @@
+package main
+
+import (
+	"net/http"
+	"fmt"
+)
+
+type dog int
+type cat int
+
+func(d dog) ServeHTTP(w http.ResponseWriter,r *http.Request){      //this is the signature of handler interface
+	//switch r.URL.Path {
+	fmt.Fprintln(w,"barks")
+	//case "/cat":fmt.Fprintln(w,"meows")
+	//}
+}
+
+func(c cat) ServeHTTP(w http.ResponseWriter,r *http.Request){      //this is the signature of handler interface
+fmt.Fprintln(w,"mews")
+}
+
+func main() {
+	var d dog
+	var c cat
+
+	mux:=http.NewServeMux()           //gives pointer to a servemux()  &  variable mux implements the handler interface
+    mux.Handle("/dog/",d)
+    mux.Handle("/cat",c)
+
+	http.ListenAndServe(":8080",mux)
+}

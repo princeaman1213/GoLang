@@ -1,0 +1,30 @@
+<html>
+<head><title>test</title>
+
+    <script src="js/jquery.js"></script>
+
+</head>
+<body>
+
+hello
+<form method="post">
+    <input type="text" name="username" id="username" placeholder="email"><br>
+    <input type="submit" id="submitbutton">
+</form >
+<script>
+  var uname=document.querySelector("#username");
+ // alert($('#username').val);
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/abcd', true);
+
+  if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
+      console.log(uname.value);
+  }
+    xhr.send(uname.value)
+
+</script>
+asdasd
+<div id="resultDiv"></div>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+<form method="post">
+    <input type="text" name="empid" id="empid" placeholder="empid"><br>
+    <input type="text" name="name" id="name" placeholder="name"><br>
+    <input type="text" name="mobile" id="mobile" placeholder="mobile"><br>
+    <input type="text" name="address" id="address" placeholder="address"><br>
+    <input type="text" name="position" id="position" placeholder="position"><br>
+    <input type="submit" id="button">
+
+</form>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+
+    var obj = {type:"Fiat", model:"500", color:"white"};
+
+    // construct an HTTP request
+    var xhr = new XMLHttpRequest();
+    xhr.open(form.method, "/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+    // send the collected data as JSON
+    xhr.send(JSON.stringify(obj));
+
+    xhr.onloadend = function () {
+        // done
+    };
+alert(obj);
+</script>
+<h1><a href="/">Go to index</a></h1>
+</body>
+</html>

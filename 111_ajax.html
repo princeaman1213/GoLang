@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>
+        JSON
+    </title>
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        h1 {
+            font-size: 5vw;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>request</h1>
+<script>
+    document.querySelector('h1').onclick= makeRequest;
+
+    function makeRequest(){
+
+        //opens a request
+        var xhr= new XMLHttpRequest();
+        xhr.open('GET','test.html');
+
+        //handles response
+        xhr.onreadystatechange=function(){
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status===200){
+                alert(xhr.responseText)
+            }
+
+        };
+xhr.send()
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>APPLY</title>
+</head>
+<body>
+
+<strong>APPLY</strong><br>
+<a href="/">index</a><br>
+<a href="/about">about</a><br>
+<a href="/contact">contact</a><br>
+<a href="/apply">apply</a><br>
+
+{{if .}}
+	   <main>
+	   {{range $key,$value := .}}
+	   <p>{{$key}}</p>
+	   <ul>{{range $value}}<li><b>{{.}}</b></li>{{end}}</ul>
+	   {{end}}
+	   </main>
+	   {{end}}
+
+
+<form action="/?fname=asd" method = "GET">
+	         <input type="text" name="fname" placeholder="first-name" autofocus autocomlpete="off">
+	         <input type="submit" name="sub-btn" value="my button">
+	   </form>
+
+</body>
+</html>
