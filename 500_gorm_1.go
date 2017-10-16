@@ -62,13 +62,32 @@ func main() {
 	//db.Model(&Owner{}).Update("first_name", "new-name")
 	//owner1:=Owner{FirstName:"Shubham",LastName:"Garg"}
 	//db.Create(&owner1)
-	var owner1 []Owner
+	//var owner1 []Owner
+
+	/*tx := db.Begin()
+	tx1:=db.Begin()
+	owner:=Owner{FirstName:"Raman",LastName:"Bindal"}
+	err=tx.Create(&owner).Error
+
+	if err==nil{
+		tx.Rollback()
+	}else {
+		tx.Commit()
+		owner:=Owner{FirstName:"Nirbheek",LastName:"Banga"}
+		err=tx1.Create(&owner).Error
+		if err!=nil{
+			tx1.Rollback()
+		}else{
+			tx1.Commit()
+		}
+	}*/
+
 
 	//db.Debug().Model(owner1).Where("id=?",1).Update("first_name","Akash")
 
 	//db.Where("first_name = ?", "Aman").First(&owner1)                         //use var owner1 Owner
-	db.Where("first_name in (?)", []string{"Aman", "Avinash"}).Find(&owner1)     //use var owner1 []Owner
-	fmt.Println(owner1)
+	//db.Where("first_name in (?)", []string{"Aman", "Avinash"}).Find(&owner1)     //use var owner1 []Owner
+	//fmt.Println(owner1)
 
 }
 
