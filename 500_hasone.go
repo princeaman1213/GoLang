@@ -42,7 +42,8 @@ func main() {
 	db.DropTableIfExists(&Place{},&Town{})
 	db.CreateTable(&Place{},&Town{})
 
-	place:=Place{Name:"NOIDA",Town:Town{Name:"GBN"}}
+	t:=Town{Name:"GBN"}
+	place:=Place{Name:"NOIDA",Town:t}
 	db.Create(&place)
 	place1:=Place{Name:"DELHI",Town:Town{Name:"shahadra"}}
 	db.Create(&place1)

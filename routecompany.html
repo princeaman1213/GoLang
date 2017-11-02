@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>
+        JSON
+    </title>
+
+</head>
+<body>
+{{range .}}
+<ul>
+    <li><a href="{{.PreURL}}/{{.CompanyName}}">{{.CompanyName}}</a></li>
+</ul>
+{{end}}
+
+<h1>{{$var:= index . 0}}</h1>
+
+<h3 align="left"><a href="{{$var.Pre2URL}}">back</a></h3>
+
+
+</body>
+</html>

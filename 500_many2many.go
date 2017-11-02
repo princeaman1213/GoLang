@@ -42,15 +42,23 @@ func main() {
 	db.DropTableIfExists(&Place1{},&Town1{})
 	db.CreateTable(&Place1{},&Town1{})
 
+	place2:=Place1{Name:"Mumbai",Town1:[]Town1{{Name:"pune"}}}
+	db.Create(&place2)
+
 	t1:=Town1{Name:"gbn"}
 	t2:=Town1{Name:"sec-62"}
 
 	place:=Place1{Name:"NOIDA",Town1:[]Town1{t1,t2}}
 	db.Create(&place)
-	place1:=Place1{Name:"DELHI",Town1:[]Town1{{Name:"shahadra"}}}
+
+	place3:=Place1{Name:"Gujarat",Town1:[]Town1{{Name:"vadodara"}}}
+	db.Create(&place3)
+
+	//t3:=Town1{Name:"Dwarka"}
+	t3:=Town1{Name:"Dwarka",Place1:[]Place1{place3}}
+	place1:=Place1{Name:"DELHI",Town1:[]Town1{{Name:"shahadra"},t3}}
 	db.Create(&place1)
-	place2:=Place1{Name:"Mumbai",Town1:[]Town1{{Name:"pune"}}}
-	db.Create(&place2)
+
 	/*town:=Town1{Name:"gbn"}
 	db.Create(&town)
 	town1:=Town1{Name:"shahadra"}

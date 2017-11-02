@@ -52,7 +52,7 @@ type UserProfile struct {
 
 // UserClaims is a set of JWT claims that contain UserProfile.
 type UserClaims struct {
-	Profile UserProfile `json:"profile"`
+	//Profile UserProfile `json:"profile"`
 	jwt.StandardClaims
 }
 
@@ -97,6 +97,8 @@ func init() {
 	t=template.Must(template.ParseFiles("insertapi.gohtml","getpersonapi.gohtml","updateapi.gohtml","deleteapi.gohtml"))
 	bs,_:=bcrypt.GenerateFromPassword([]byte("123"),bcrypt.MinCost)
 	dbuser["alex@gmail.com"]=user{"alex@gmail.com",bs,"alex","cons"} //sample user
+	dbuser["alex2@gmail.com"]=user{"alex2@gmail.com",bs,"alex2","cons"} //sample user
+
 }
 
 func main() {
@@ -287,7 +289,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 		//set claims
 		claims = UserClaims{
-			UserProfile{Name: p.Username, Permissions: []string{"read","write","modify","abcd"}},
+			//UserProfile{Name: p.Username, Permissions: []string{"read","write","modify","abcd"}},
 			jwt.StandardClaims{
 				Issuer: "administrator007",     //"test-project"
 				//ExpiresAt:,

@@ -60,54 +60,20 @@ func main() {
 	owner1:=Owner{FirstName:"Shubham",LastName:"Garg"}
 	db.Create(&owner1)
 
+	//db.Debug().Model(&Owner{}).Where("id = ?",1).Update("last_name","Patel")   //updating with callbacks
+	//db.Model(&Owner{}).Where("id = ?",1).Updates(map[string]interface{}{"first_name": "hello","last_name":"newname"})
+	//db.Debug().Model(&Owner{}).Where("id = ?",1).UpdateColumn("first_name", "hello")         //without callbaks
+
+	//db.Debug().Model(&Owner{}).Where("id = ?",2).Delete(&Owner{})                      //deleting with callback
+
 	var owner3 []Owner
-	//db.Debug().Set("gorm:query_option", "FOR UPDATE").First(&owner3, 1)      //used to fetch the record
-
-	//db.Find(&owner3)
-
-  //  Search(db).Find(&owner3)                       // Search func is used here to apply additional conditions
-	//fmt.Println(owner3)
 
 	db.Scopes(Search).Find(&owner3)                //Scope is used here to apply additional conditions
 	fmt.Println(owner3)
 
-	//db.Debug().Model(&Owner{}).ModifyColumn("first_name", "CHAR(22)")
-
-	//owner.FirstName="Abc"
-	//db.Debug().Save(&owner)
-	//db.Debug().Delete(&owner)
-	//db.Model(&Owner{}).Update("first_name", "new-name")
-	//owner1:=Owner{FirstName:"Shubham",LastName:"Garg"}
-	//db.Create(&owner1)
-	//var owner1 []Owner
-
-	/*tx := db.Begin()
-	tx1:=db.Begin()
-	owner:=Owner{FirstName:"Raman",LastName:"Bindal"}
-	err=tx.Create(&owner).Error
-
-	if err!=nil{
-		tx.Rollback()
-	}else {
-		tx.Commit()
-		owner:=Owner{FirstName:"Nirbheek",LastName:"Banga"}
-		err=tx1.Create(&owner).Error
-		if err!=nil{
-			tx1.Rollback()
-		}else{
-			tx1.Commit()
-		}
-	}*/
-
-
-	//db.Debug().Model(owner1).Where("id=?",1).Update("first_name","Akash")
-
-	//db.Where("first_name = ?", "Aman").First(&owner1)                         //use var owner1 Owner
-	//db.Where("first_name in (?)", []string{"Aman", "Avinash"}).Find(&owner1)     //use var owner1 []Owner
-	//fmt.Println(owner1)
 
 }
 
 func Search(db *gorm.DB) *gorm.DB {
-	return db.Where("id = ?", 2)
+	return db.Where("id = ?", 1)
 }

@@ -12,6 +12,7 @@ type Place struct {
 	gorm.Model
 	Name        string
 	Town        []Town             `gorm:"ForeignKey:PlaceID;AssociationForeignKey:ID"`
+	                               //also works without writing this `.....` , maybe because gorm.model takes care of that stuff
 	//TownID      int
 }
 

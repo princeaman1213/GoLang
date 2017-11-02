@@ -68,6 +68,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	}
 	xs := strings.Split(c.Value, "|")
+	fmt.Println(xs[1:])
 	t.ExecuteTemplate(w, "100disp.gohtml", xs[1:])
 }
 
