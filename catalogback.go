@@ -21,6 +21,7 @@ type Hatchback struct {
 	HatchID      uint     `gorm:"primary_key"`
 	Pre2URL string          `gorm:"-"`           //ignore this field while making table
 	PreURL string          `gorm:"-"`           //ignore this field while making table
+	Pre3URL []string          `gorm:"-"`           //ignore this field while making table
 	CompanyName  string
 	CarName  string
 	VariantName  string
@@ -32,6 +33,7 @@ type Sedan struct {
 	SedanID      uint     `gorm:"primary_key"`
 	Pre2URL string          `gorm:"-"`           //ignore this field while making table
 	PreURL string          `gorm:"-"`           //ignore this field while making table
+	Pre3URL []string          `gorm:"-"`           //ignore this field while making table
 	CompanyName  string
 	CarName  string
 	VariantName  string
@@ -60,14 +62,14 @@ type Spec struct {
 }
 
 type HatchSpec struct{
-//	PreURL string          `gorm:"-"`           //ignore this field while making table
+	//	PreURL string          `gorm:"-"`           //ignore this field while making table
 	Hatchback
 	Spec
 	Feature
 }
 
 type SedanSpec struct{
-//	PreURL string          `gorm:"-"`           //ignore this field while making table
+	//	PreURL string          `gorm:"-"`           //ignore this field while making table
 	Sedan
 	Spec
 	Feature
@@ -122,11 +124,11 @@ func main() {
 	router.HandleFunc("/type/{type}/{carname}",carname)
 	router.HandleFunc("/type/{type}/{carname}/{car}",variantname)
 	router.HandleFunc("/type/{type}/{carname}/{car}/{variantname}",showdata)
-	router.HandleFunc("/search",search)
-//	router.HandleFunc("/exec",exec)
+	router.HandleFunc("/searchcar",searchcar)
+
 
 	router.Handle("/favicon.ico",http.NotFoundHandler())
-	http.ListenAndServe(":8000",router)
+	http.ListenAndServe(":8080",router)
 }
 
 func catindex(w http.ResponseWriter,r *http.Request){
@@ -142,17 +144,20 @@ func carcompany(w http.ResponseWriter,r *http.Request){
 	var route = mux.Vars(r)
 	fmt.Println("car company      ",route)
 
-	var s,pre string
+	var s string
 	s="/type"+"/"+route["type"]
-	pre="/type"
+	//pre="/type"
+	var links []string
+	links=append(links,route["type"])
+
 	fmt.Println("carcompany url      :",s)
 
 	if route["type"]=="hatchbacks" {
 		var h []Hatchback
 		db.Debug().Table("hatchback").Select("DISTINCT company_name").Find(&h)
 		for i := 0; i < len(h); i++ {
-			h[i].Pre2URL=pre
 			h[i].PreURL = s
+			h[i].Pre3URL=links                                          //path links
 		}
 		t.ExecuteTemplate(w,"routecompany.html",h)
 
@@ -160,8 +165,8 @@ func carcompany(w http.ResponseWriter,r *http.Request){
 		var h []Sedan
 		db.Debug().Table("sedan").Select("DISTINCT company_name").Find(&h)
 		for i := 0; i < len(h); i++ {
-			h[i].Pre2URL=pre
 			h[i].PreURL = s
+			h[i].Pre3URL=links                                          //path links
 		}
 		t.ExecuteTemplate(w,"routecompany.html",h)
 	}
@@ -169,64 +174,70 @@ func carcompany(w http.ResponseWriter,r *http.Request){
 
 func carname(w http.ResponseWriter,r *http.Request){
 	var route = mux.Vars(r)
-    fmt.Println("carname           :",route["type"],route["carname"])
+	fmt.Println("carname           :",route["type"],route["carname"])
 
-    var s,pre string
-    s="/type"+"/"+route["type"]+"/"+route["carname"]
-    pre="/type"+"/"+route["type"]
-    fmt.Println("carname  url      :",s)
+	var s string
+	s="/type"+"/"+route["type"]+"/"+route["carname"]
+	var links []string
+	links=append(links,route["type"])
+	links=append(links,route["carname"])
 
-    if route["type"]=="hatchbacks" {
+	fmt.Println("carname  url      :",s)
+
+	if route["type"]=="hatchbacks" {
 		var h []Hatchback
 		db.Debug().Table("hatchback").Select("DISTINCT car_name").Where("company_name=?", route["carname"]).Find(&h)
 		for i := 0; i < len(h); i++ {
 			h[i].PreURL = s
-			h[i].Pre2URL = pre
+			h[i].Pre3URL=links                                          //path links
 		}
 		t.ExecuteTemplate(w, "routecar.html", h)
 	}
 
 	if route["type"]=="sedans" {
-			var s1 []Sedan
-			db.Debug().Table("sedan").Select("DISTINCT car_name").Where("company_name=?", route["carname"]).Find(&s1)
-			for i:=0;i<len(s1);i++{
-				s1[i].PreURL=s
-				s1[i].Pre2URL = pre
-			}
-			t.ExecuteTemplate(w, "routecar.html", s1)
+		var s1 []Sedan
+		db.Debug().Table("sedan").Select("DISTINCT car_name").Where("company_name=?", route["carname"]).Find(&s1)
+		for i:=0;i<len(s1);i++{
+			s1[i].PreURL=s
+			s1[i].Pre3URL=links                                          //path links
 		}
+		t.ExecuteTemplate(w, "routecar.html", s1)
+	}
 }
 
 func variantname(w http.ResponseWriter,r *http.Request){
 	var route = mux.Vars(r)
 	fmt.Println("url is        ",route)
 
-	var s,pre string
+	var s string
 	s="/type"+"/"+route["type"]+"/"+route["carname"]+"/"+route["car"]
-	pre="/type"+"/"+route["type"]+"/"+route["carname"]
+    var links []string
+	links=append(links,route["type"])
+	links=append(links,route["carname"])
+	links=append(links,route["car"])
 
-	url:=strings.Split(s,"/")                           //another approach , maybe useful in bigger apps
+	url:=strings.Split(s,"/")
 	fmt.Println(url,len(url))
 	fmt.Println(url[0]+url[1]+url[2]+url[3]+url[4])
 
 	fmt.Println("variantname url      :",s)
 
 	if route["type"]=="hatchbacks" {
-			var h []Hatchback
-				db.Debug().Table("hatchback").Select("DISTINCT variant_name").Where("company_name=? AND car_name=?", route["carname"],route["car"]).Find(&h)
-				for i:=0;i<len(h);i++{
-					h[i].PreURL="/"+url[1]+"/"+url[2]+"/"+url[3]+"/"+url[4]
-					h[i].Pre2URL = "/"+url[1]+"/"+url[2]+"/"+url[3]
-				}
-				t.ExecuteTemplate(w, "routevariant.html", h)
+		var h []Hatchback
+		db.Debug().Table("hatchback").Select("DISTINCT variant_name").Where("company_name=? AND car_name=?", route["carname"],route["car"]).Find(&h)
+		for i:=0;i<len(h);i++{
+			h[i].PreURL = s
+			h[i].Pre3URL=links                                          //path links
 		}
+		t.ExecuteTemplate(w, "routevariant.html", h)
+	}
 
 	if route["type"]=="sedans" {
 		var h []Sedan
 		db.Debug().Table("sedan").Select("DISTINCT variant_name").Where("company_name=? AND car_name=?", route["carname"], route["car"]).Find(&h)
 		for i := 0; i < len(h); i++ {
 			h[i].PreURL = s
-			h[i].Pre2URL = pre
+			h[i].Pre3URL=links                                         //path links
 		}
 		t.ExecuteTemplate(w, "routevariant.html", h)
 	}
@@ -240,55 +251,62 @@ func showdata(w http.ResponseWriter,r *http.Request){
 		var t1 HatchSpec
 		db.Raw("SELECT spec.*, hatchback.variant_name FROM spec INNER JOIN hatchback ON hatchback.s_id = spec.specs_id Where hatchback.variant_name=? AND hatchback.car_name=?", route["variantname"],route["car"]).Scan(&t1)
 		db.Raw("SELECT feature.*, hatchback.variant_name FROM feature INNER JOIN hatchback ON hatchback.f_id = feature.feature_id Where hatchback.variant_name=? AND hatchback.car_name=?", route["variantname"],route["car"]).Scan(&t1)
-		//fmt.Println(t1.VariantName, t1.Length)
 
 		t.ExecuteTemplate(w, "showdata.html", t1)
 	}else if route["type"]=="sedans" {
 		var t1 SedanSpec
-		db.Raw("SELECT spec.*, sedan.variant_name FROM spec INNER JOIN sedan ON sedan.s_id = spec.specs_id Where sedan.variant_name=? AND sedan.car_name=?", route["variantname"],route["car"]).Scan(&t1)
-		db.Raw("SELECT feature.*, sedan.variant_name FROM feature INNER JOIN sedan ON sedan.f_id = feature.feature_id Where sedan.variant_name=? AND sedan.car_name=?", route["variantname"],route["car"]).Scan(&t1)
-		//fmt.Println(t1.VariantName, t1.Length)
-          fmt.Println("data is ::",t1)
+		db.Raw("SELECT spec.*, sedan.variant_name FROM spec INNER JOIN sedan ON sedan.s_id = spec.specs_id Where sedan.variant_name=? AND sedan.car_name=?", route["variantname"], route["car"]).Scan(&t1)
+		db.Raw("SELECT feature.*, sedan.variant_name FROM feature INNER JOIN sedan ON sedan.f_id = feature.feature_id Where sedan.variant_name=? AND sedan.car_name=?", route["variantname"], route["car"]).Scan(&t1)
+
 		t.ExecuteTemplate(w, "showdata.html", t1)
 	}
 }
 
-
-func search(w http.ResponseWriter,r *http.Request){
-	//exec(w,r)
-	w.Header().Set("Content-Type","text/html; charset=utf-8")
-
+func searchcar(w http.ResponseWriter,r *http.Request) {
 	var formcar string
+	var data []string
+
 	if r.Method == http.MethodPost {
-		// get form values
 		formcar = r.FormValue("car")
-	}
+		var t string
+		var h []Hatchback
+		var sed []Sedan
 
-	var h []Hatchback
-	db.Debug().Table("hatchback").Select("DISTINCT car_name").Where("company_name=?", formcar).Find(&h)
-	var hs []Sedan
-	db.Debug().Table("sedan").Select("DISTINCT car_name").Where("company_name=?", formcar).Find(&hs)
-
-	fmt.Println("hatchback is      ;",h)
-	fmt.Println("sedan is      ;",hs)
-
-//	var url string
-	if h[0].CarName!=""{
-		for i := 0; i < len(h); i++ {
-			h[i].PreURL = "/type/hatchbacks/"+formcar
+		rows, err := db.Raw("select car_name from hatchback where company_name = ?", formcar).Rows()
+        if err!=nil{
+        	fmt.Println("Error at beginning..!")
 		}
-        fmt.Println(h[0].PreURL)
-		t.ExecuteTemplate(w, "searchcar.html", h)
+		defer rows.Close()
 
-	}
-
-	if hs[0].CarName!=""{
-		for i := 0; i < len(hs); i++ {
-			hs[i].PreURL = "/type/hatchbacks/"+formcar
+		rows1, err1 := db.Raw("select car_name from sedan where company_name = ?", formcar).Rows()
+		if err1!=nil{
+			fmt.Println("Error at 2 beginning..!")
 		}
-		fmt.Println(hs[0].PreURL)
+		defer rows1.Close()
 
+        if rows.Next(){
+			db.Raw("Select DISTINCT car_name FROM hatchback Where company_name=?", formcar).Scan(&h)
+			//fmt.Println("1st if")
+			fmt.Println("hatchback is      ;", h)
+			t = "/type/hatchbacks/" + formcar
+			data = append(data, t)
+			for _, v := range h {
+				data = append(data, v.CarName)
+			}
+			fmt.Println("data1 is :::::", data)
+		}
+
+		if rows1.Next() {
+			db.Raw("Select DISTINCT car_name FROM sedan Where company_name=?", formcar).Scan(&sed)
+			//fmt.Println("2nd if")
+			fmt.Println("sedan is      ;", sed)
+			t = "/type/sedans/" + formcar
+			data = append(data, t)
+			for _, v := range sed {
+				data = append(data, v.CarName)
+			}
+			fmt.Println("data is :::::", data, len(data))
+		}
 	}
-	t.ExecuteTemplate(w, "searchcar.html", hs)
-
+	t.ExecuteTemplate(w,"searchcar.html",data)
 }

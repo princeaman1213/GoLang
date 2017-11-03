@@ -3,19 +3,22 @@
 <head>
     <meta charset="utf-8">
     <title>
-        JSON
+        Variant Name
     </title>
 
 </head>
 <body>
+
+{{$var:=index . 0}}
+<a href="/">Home Page</a> >> <a href="/type">type</a> >> <a href="/type/{{index $var.Pre3URL 0}}">{{index $var.Pre3URL 0}}</a> >> <a href="../{{index $var.Pre3URL 1}}">{{index $var.Pre3URL 1}}</a> >> <a href="{{index $var.Pre3URL 2}}">{{index $var.Pre3URL 2}}</a>
+
+
 {{range .}}
 <ul>
     <li><a href="{{.PreURL}}/{{.VariantName}}">{{.VariantName}}</a></li>
 </ul>
 {{end}}
 
-<h1>{{$var:= index . 0}}</h1>
-<h3 align="left"><a href="{{$var.Pre2URL}}">back</a></h3>
 
 </body>
 </html>
