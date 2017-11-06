@@ -10,7 +10,6 @@ import (
 	"html/template"
 	"github.com/gorilla/mux"
 	"strings"
-
 )
 
 type Car struct{
@@ -119,9 +118,7 @@ func main() {
 	//db.CreateTable(&Hatchback{},&Sedan{},Spec{},Feature{})
 
 	router:=mux.NewRouter()
-	router.Handle("/background.jpg",http.StripPrefix("/",http.FileServer(http.Dir("./"))))
-
-	router.HandleFunc("/index",catindex)
+	router.HandleFunc("/",catindex)
 	router.HandleFunc("/type",typeofvec)
 	router.HandleFunc("/type/{type}",carcompany)
 	router.HandleFunc("/type/{type}/{carname}",carname)
@@ -131,12 +128,11 @@ func main() {
 
 
 	router.Handle("/favicon.ico",http.NotFoundHandler())
-	http.ListenAndServe(":8000",router)
+	http.ListenAndServe(":8080",router)
 }
 
 func catindex(w http.ResponseWriter,r *http.Request){
 	w.Header().Set("Content-Type","text/html; charset=utf-8")
-
 	t.ExecuteTemplate(w,"catindex.html",nil)
 }
 
@@ -215,11 +211,11 @@ func variantname(w http.ResponseWriter,r *http.Request){
 
 	var s string
 	s="/type"+"/"+route["type"]+"/"+route["carname"]+"/"+route["car"]
-    var links []string
+	var links []string
 	links=append(links,route["type"])
 	links=append(links,route["carname"])
 	links=append(links,route["car"])
-fmt.Println("test",route["car"])
+
 	url:=strings.Split(s,"/")
 	fmt.Println(url,len(url))
 	fmt.Println(url[0]+url[1]+url[2]+url[3]+url[4])
@@ -268,17 +264,17 @@ func showdata(w http.ResponseWriter,r *http.Request){
 
 func searchcar(w http.ResponseWriter,r *http.Request) {
 	var formcar string
-	var data []string
+//	var data []string
 
 	if r.Method == http.MethodPost {
 		formcar = r.FormValue("car")
 		var t string
-		var h []Hatchback
-		var sed []Sedan
+//		var h []Hatchback
+	//	var sed []Sedan
 
 		rows, err := db.Raw("select car_name from hatchback where company_name = ?", formcar).Rows()
-        if err!=nil{
-        	fmt.Println("Error at beginning..!")
+		if err!=nil{
+			fmt.Println("Error at beginning..!")
 		}
 		defer rows.Close()
 
@@ -288,29 +284,15 @@ func searchcar(w http.ResponseWriter,r *http.Request) {
 		}
 		defer rows1.Close()
 
-        if rows.Next(){
-			db.Raw("Select DISTINCT car_name FROM hatchback Where company_name=?", formcar).Scan(&h)
-			//fmt.Println("1st if")
-			fmt.Println("hatchback is      ;", h)
+		if rows.Next(){
 			t = "/type/hatchbacks/" + formcar
-			data = append(data, t)
-			for _, v := range h {
-				data = append(data, v.CarName)
-			}
-			fmt.Println("data1 is :::::", data)
+			http.Redirect(w,r,t,http.StatusTemporaryRedirect)
 		}
 
 		if rows1.Next() {
-			db.Raw("Select DISTINCT car_name FROM sedan Where company_name=?", formcar).Scan(&sed)
-			//fmt.Println("2nd if")
-			fmt.Println("sedan is      ;", sed)
 			t = "/type/sedans/" + formcar
-			data = append(data, t)
-			for _, v := range sed {
-				data = append(data, v.CarName)
-			}
-			fmt.Println("data is :::::", data, len(data))
+			http.Redirect(w,r,t,http.StatusTemporaryRedirect)
 		}
 	}
-	t.ExecuteTemplate(w,"searchcar.html",data)
+
 }
